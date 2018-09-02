@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bean:beans xmlns="http://www.springframework.org/schema/security"
+            xmlns:bean="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!-- 1.放行静态资源 -->
+    <http pattern="/css/**" security="none" />
+    <http pattern="/js/**" security="none" />
+    <http pattern="/img/**" security="none" />
+    <http pattern="/plugins/**" security="none" />
+    <http pattern="/login.html" security="none" />
+    <http pattern="/login_error.html" security="none" />
+
+    <!-- 2.配置拦截规则 -->
+    <http>
+        <!-- 拦截规则 -->
+        <intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+        <form-login login-page="/login.html"
+                    default-target-url="/admin/index.html"
+                    always-use-default-target="true"
+                    authentication-failure-url="/login_error.html"/>
+        <!-- 关闭跨域请求 -->
+        <csrf disabled="true" />
+        <!-- iframe框架结构展示 -->
+        <headers>
+            <frame-options policy="SAMEORIGIN" />
+        </headers>
+        <!-- 登出跳转 -->
+        <logout logout-success-url="/login.html" />
+    </http>
+
+    <!-- 3.认证器管理 -->
+    <authentication-manager>
+        <authentication-provider>
+            <user-service>
+                <user name="admin" password="{noop}admin" authorities="ROLE_USER" />
+                <user name="root" password="{noop}root" authorities="ROLE_USER" />
+            </user-service>
+        </authentication-provider>
+    </authentication-manager>
+
+
+
+</bean:beans>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<constructor-arg name="brokerURL" value="tcp://192.168.25.128:61616" />
+	</bean>
+
+	<bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+		<constructor-arg name="targetConnectionFactory" ref="targetConnectionFactory" />
+	</bean>
+
+	<!--<bean id="queue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="queue1" />
+	</bean>-->
+
+	<bean id="indexHtml" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="index_html_topic" />
+	</bean>
+
+	<bean id="deleteIndexHtml" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="delete_index_html_topic" />
+	</bean>
+
+	<bean id="indexListener" class="com.pyg.listener.IndexListener" />
+
+	<bean id="indexDeleteListener" class="com.pyg.listener.IndexDeleteListener" />
+
+	<bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="indexHtml" />
+		<property name="messageListener" ref="indexListener" />
+	</bean>
+
+	<bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="deleteIndexHtml" />
+		<property name="messageListener" ref="indexDeleteListener" />
+	</bean>
+
+
+</beans>
