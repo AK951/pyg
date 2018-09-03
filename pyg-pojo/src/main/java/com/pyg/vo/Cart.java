@@ -15,7 +15,7 @@ import java.util.List;
 public class Cart implements Serializable {
     private String sellerId; //商家ID
     private String sellerName; //商家名称
-    private List<TbOrderItem> orderItemList; //购物车明细
+    private List<CartItem> orderItemList; //购物车明细
 
     public String getSellerId() {
         return sellerId;
@@ -33,11 +33,11 @@ public class Cart implements Serializable {
         this.sellerName = sellerName;
     }
 
-    public List<TbOrderItem> getOrderItemList() {
+    public List<CartItem> getOrderItemList() {
         return orderItemList;
     }
 
-    public void setOrderItemList(List<TbOrderItem> orderItemList) {
+    public void setOrderItemList(List<CartItem> orderItemList) {
         this.orderItemList = orderItemList;
     }
 }

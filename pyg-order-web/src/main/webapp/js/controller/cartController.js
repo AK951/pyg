@@ -3,10 +3,10 @@ app.controller('cartController', function($scope, $http, cartService, addressSer
 
     // 购物车列表
     $scope.findCartList = function () {
-        cartService.findCartList().success(function (response) {
+        cartService.findOrderCartList().success(function (response) {
             $scope.cartList = response;
             $scope.totalValue = cartService.sum($scope.cartList); //求合计数
-        })
+        });
     };
 
     // 获取登录用户名

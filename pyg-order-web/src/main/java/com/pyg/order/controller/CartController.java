@@ -91,12 +91,12 @@ public class CartController {
         }
     }
 
-    @RequestMapping("/showName")
-    public Map showName() {
-        String name = request.getRemoteUser();
-        Map map = new HashMap();
-        map.put("loginName", name);
-        return map;
+    @RequestMapping("/findOrderCartList")
+    public List<Cart> findOrderCartList() {
+        //得到登陆人账号,判断当前是否有人登陆
+        String username = request.getRemoteUser();
+        List<Cart> cartList = cartService.findCartListFromRedis(username);
+        return cartService.findOrderCartList(cartList);
     }
 
 }

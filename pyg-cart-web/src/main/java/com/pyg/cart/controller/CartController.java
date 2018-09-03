@@ -8,13 +8,11 @@ import com.pyg.vo.Cart;
 import com.pyg.vo.InfoResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +64,15 @@ public class CartController {
         }
     }
 
+    /**
+     * description: 添加商品到购物车
+     *
+     * @param itemId 商品id
+     * @param num 商品数量
+     * @return com.pyg.vo.InfoResult
+     * @author AK
+     * @date  2018年09月03日 14:50:56
+     */
     @CrossOrigin(origins={"http://localhost:9104", "http://localhost:9105"},allowCredentials="true")
     @RequestMapping("/addGoodsToCartList/{itemId}/{num}")
     public InfoResult addGoodsToCartList(@PathVariable Long itemId, @PathVariable Integer num) {
@@ -89,14 +96,47 @@ public class CartController {
             e.printStackTrace();
             return new InfoResult(false, "添加失败");
         }
+
     }
 
-    @RequestMapping("/showName")
-    public Map showName() {
-        String name = request.getRemoteUser();
-        Map map = new HashMap();
-        map.put("loginName", name);
-        return map;
+    @RequestMapping("/updateStatus/{status}/{itemId}")
+    public InfoResult updateStatus(@RequestBody List<Cart> cartList, @PathVariable boolean status, @PathVariable Long itemId) {
+        //得到登陆人账号,判断当前是否有人登陆
+        String username = request.getRemoteUser();
+        cartList = cartService.updateStatus(cartList, status, itemId);
+        try {
+            if(StringUtils.isEmpty(username)) {
+                CookieUtil.setCookie(request, response, "cartList", JSON.toJSONString(cartList),3600*24,"UTF-8");
+                return new InfoResult(true, "添加成功");
+            } else {
+                cartService.saveCartListToRedis(username, cartList);
+                return new InfoResult(true, "添加成功");
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return new InfoResult(false, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new InfoResult(false, "添加失败");
+        }
+    }
+
+    @RequestMapping("/findOrderCartList")
+    public List<Cart> findOrderCartList() {
+        //得到登陆人账号,判断当前是否有人登陆
+        String username = request.getRemoteUser();
+        List<Cart> cartList = null;
+        if(StringUtils.isEmpty(username)) {
+            String cartListString = CookieUtil.getCookieValue(request, "cartList", "utf-8");
+            if(StringUtils.isEmpty(cartListString)) {
+                cartListString = "[]";
+            }
+            cartList = JSON.parseArray(cartListString, Cart.class);
+        } else {
+            cartList = cartService.findCartListFromRedis(username);
+        }
+        return cartService.findOrderCartList(cartList);
+
     }
 
 }

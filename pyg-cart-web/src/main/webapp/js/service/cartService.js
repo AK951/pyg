@@ -5,6 +5,10 @@ app.service('cartService', function($http) {
     this.findCartList = function () {
         return $http.get('cart/findCartList');
     };
+    // 获得已选购物车列表
+    this.findOrderCartList = function () {
+        return $http.get('cart/findOrderCartList');
+    };
     // 添加商品到购物车
     this.addGoodsToCartList = function (itemId, num) {
         return $http.get('cart/addGoodsToCartList/' + itemId + "/" + num);
@@ -25,6 +29,10 @@ app.service('cartService', function($http) {
     //保存订单
     this.submitOrder = function (order) {
         return $http.post('order/add', order);
-    }
+    };
+    // 更改购物车状态
+    this.updateStatus = function (status, ids, cartList) {
+        return $http.post('cart/updateStatus/' + status + "/" + ids, cartList);
+    };
 
 });

@@ -6,6 +6,7 @@ import com.pyg.mapper.TbItemMapper;
 import com.pyg.pojo.TbItem;
 import com.pyg.pojo.TbOrderItem;
 import com.pyg.vo.Cart;
+import com.pyg.vo.CartItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -59,8 +60,8 @@ public class CartServiceImpl implements CartService {
             cart = new Cart();
             cart.setSellerId(item.getSellerId());
             cart.setSellerName(item.getSeller());
-            List<TbOrderItem> orderItemList = new ArrayList<>();
-            TbOrderItem orderItem = createOrderItem(item, num);
+            List<CartItem> orderItemList = new ArrayList<>();
+            CartItem orderItem = createOrderItem(item, num);
             orderItemList.add(orderItem);
             cart.setOrderItemList(orderItemList);
             //4.2 将新建的购物车对象添加到购物车列表
@@ -70,7 +71,7 @@ public class CartServiceImpl implements CartService {
         //5.如果购物车列表中存在该商家的购物车
         else {
             // 查询购物车明细列表中是否存在该商品
-            TbOrderItem orderItem = searchOrderItemByItemId(cart.getOrderItemList(), itemId);
+            CartItem orderItem = searchOrderItemByItemId(cart.getOrderItemList(), itemId);
             //5.1. 如果没有，新增购物车明细
             if(orderItem == null) {
                 orderItem = createOrderItem(item, num);
@@ -134,6 +135,46 @@ public class CartServiceImpl implements CartService {
         return cartList1;
     }
 
+    @Override
+    public List<Cart> findOrderCartList(List<Cart> cartList) {
+        if(cartList != null) {
+            for (int i = 0; i < cartList.size(); i++) {
+                Cart cart = cartList.get(i);
+                List<CartItem> orderItemList = cart.getOrderItemList();
+                for (int j = 0; j < orderItemList.size(); j++) {
+                    CartItem orderItem = orderItemList.get(j);
+                    if(!orderItem.isCartStatus()) {
+                        orderItemList.remove(orderItem);
+                    }
+                }
+                if(orderItemList.size() == 0) {
+                    cartList.remove(cart);
+                }
+            }
+        } else {
+            cartList = new ArrayList<>();
+        }
+        return cartList;
+    }
+
+    @Override
+    public List<Cart> updateStatus(List<Cart> cartList, boolean status, Long itemId) {
+        //1.根据商品SKU ID查询SKU商品信息
+        TbItem item = itemMapper.selectByPrimaryKey(itemId);
+
+        //2.获取商家ID
+        String sellerId = item.getSellerId();
+        //3.根据商家ID判断购物车列表中是否存在该商家的购物车
+        Cart cart = searchCartBySellerId(cartList, sellerId);
+
+        // 查询购物车明细列表中是否存在该商品
+        CartItem orderItem = searchOrderItemByItemId(cart.getOrderItemList(), itemId);
+
+        //5.2. 如果有，在原购物车明细上添加数量，更改金额
+        orderItem.setCartStatus(status);
+        return cartList;
+    }
+
     /**
      * description: 根据商品ID查询商品明细
      *
@@ -143,8 +184,8 @@ public class CartServiceImpl implements CartService {
      * @author AK
      * @date  2018年08月26日 08:28:00
      */
-    private TbOrderItem searchOrderItemByItemId(List<TbOrderItem> orderItemList, Long itemId) {
-        for (TbOrderItem orderItem : orderItemList) {
+    private CartItem searchOrderItemByItemId(List<CartItem> orderItemList, Long itemId) {
+        for (CartItem orderItem : orderItemList) {
             if(orderItem.getItemId().longValue() == itemId.longValue()) {
                 return orderItem;
             }
@@ -179,11 +220,11 @@ public class CartServiceImpl implements CartService {
      * @author AK
      * @date  2018年08月26日 08:22:33
      */
-    private TbOrderItem createOrderItem(TbItem item, Integer num) {
+    private CartItem createOrderItem(TbItem item, Integer num) {
         if(num <= 0) {
             throw new RuntimeException("数量非法");
         }
-        TbOrderItem orderItem = new TbOrderItem();
+        CartItem orderItem = new CartItem();
         orderItem.setGoodsId(item.getGoodsId());
         orderItem.setItemId(item.getId());
         orderItem.setNum(num);
@@ -192,6 +233,7 @@ public class CartServiceImpl implements CartService {
         orderItem.setSellerId(item.getSellerId());
         orderItem.setPrice(item.getPrice());
         orderItem.setTotalFee(new BigDecimal(item.getPrice().doubleValue() * num));
+        orderItem.setCartStatus(true);
         return orderItem;
     }
 }

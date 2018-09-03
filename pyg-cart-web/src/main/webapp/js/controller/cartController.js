@@ -1,11 +1,26 @@
 // 控制层 
 app.controller('cartController', function($scope, $http, cartService, addressService) {
 
+    // 更改购物车状态
+    $scope.updateStatus = function (status, id) {
+        cartService.updateStatus(status, id, $scope.cartList).success(function (response) {
+            $scope.findCartList();
+        });
+    };
+
+    $scope.cartList = [];
     // 购物车列表
     $scope.findCartList = function () {
         cartService.findCartList().success(function (response) {
             $scope.cartList = response;
-            $scope.totalValue = cartService.sum($scope.cartList); //求合计数
+            $scope.findOrderCartList();
+        })
+    };
+
+    // 已选购物车列表
+    $scope.findOrderCartList = function () {
+        cartService.findOrderCartList().success(function (response) {
+            $scope.totalValue = cartService.sum(response); //求合计数
         })
     };
 
@@ -118,6 +133,6 @@ app.controller('cartController', function($scope, $http, cartService, addressSer
                 alert(response.message);
             }
         })
-    }
+    };
 
 });	

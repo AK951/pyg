@@ -56,4 +56,16 @@ public interface CartService {
      * @date  2018年08月26日 10:27:02
      */
     public List<Cart> mergeCartList(List<Cart> cartList1,List<Cart> cartList2);
+
+    /**
+     * description:
+     *
+     * @param cartList
+     * @return java.util.List<com.pyg.vo.Cart>
+     * @author AK
+     * @date  2018年09月03日 16:19:29
+     */
+    public List<Cart> findOrderCartList(List<Cart> cartList);
+
+    List<Cart> updateStatus(List<Cart> cartList, boolean status, Long itemId);
 }

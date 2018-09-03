@@ -1,8 +1,10 @@
 package com.pyg.order.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.pyg.cart.service.CartService;
 import com.pyg.order.service.OrderService;
 import com.pyg.pojo.TbOrder;
+import com.pyg.vo.Cart;
 import com.pyg.vo.InfoResult;
 import com.pyg.vo.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ public class OrderController {
 
 	@Reference(timeout=100000)
 	private OrderService orderService;
+	@Reference(timeout=100000)
+	private CartService cartService;
 	@Autowired
 	private HttpServletRequest request;
 	
@@ -128,5 +132,5 @@ public class OrderController {
 	public PageResult search(@PathVariable Integer page, @PathVariable Integer rows, @RequestBody TbOrder order){
 		return orderService.findPage(page, rows, order);		
 	}
-	
+
 }
