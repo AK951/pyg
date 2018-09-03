@@ -237,4 +237,46 @@ public class UserServiceImpl implements UserService {
 		return (smsCode+"").equals(code);
 	}
 
+
+	// 修改密码
+	@Override
+	public boolean updatePass(String username, String pass, String newPass) {
+		TbUserExample example = new TbUserExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andUsernameEqualTo(username);
+		List<TbUser> users = userMapper.selectByExample(example);
+		for (TbUser user : users) {
+			if(!user.getPassword().equals(DigestUtils.md5DigestAsHex(pass.getBytes()))){
+				return false;
+			}
+			user.setPassword(DigestUtils.md5DigestAsHex(newPass.getBytes()));
+			userMapper.updateByPrimaryKey(user);
+		}
+		return true;
+	}
+
+	// 获取手机号
+	@Override
+	public List<TbUser> getPhone(String usernaem) {
+		TbUserExample example = new TbUserExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andUsernameEqualTo(usernaem);
+		List<TbUser> users = userMapper.selectByExample(example);
+		return users;
+	}
+
+	// 更改手机号
+	@Override
+	public void updatePhone(String username, String newPhone) {
+		TbUserExample example = new TbUserExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andUsernameEqualTo(username);
+		List<TbUser> users = userMapper.selectByExample(example);
+		for (TbUser user : users) {
+			user.setPhone(newPhone);
+			userMapper.updateByPrimaryKey(user);
+		}
+	}
+
+
 }

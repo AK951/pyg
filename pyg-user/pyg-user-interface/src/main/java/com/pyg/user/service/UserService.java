@@ -106,4 +106,19 @@ public interface UserService {
      * @date  2018年08月25日 08:42:03
      */
 	boolean checkCode(String phone, String code);
+
+
+	// 修改密码
+	boolean updatePass(String username,String pass,String newPass);
+
+	// 获取手机号
+	List<TbUser> getPhone(String usernaem);
+
+	// 更改手机号
+	void updatePhone(String username,String newPhone);
+
+
+
+
+
 }
