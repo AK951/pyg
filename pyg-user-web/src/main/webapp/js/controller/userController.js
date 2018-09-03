@@ -1,6 +1,6 @@
 // 控制层 
-app.controller('userController', function($scope,$location,$http, userService) {
-	
+app.controller('userController', function($scope,$location,userService,uploadService) {
+
     // 注册
     $scope.save = function () {
         if($scope.entity.username == null || $scope.entity.password == null ||
@@ -21,7 +21,6 @@ app.controller('userController', function($scope,$location,$http, userService) {
         })
     };
 
-
     // 发送短信验证码
     $scope.getSmsCode = function () {
         if($scope.entity.phone == null) {
@@ -34,7 +33,6 @@ app.controller('userController', function($scope,$location,$http, userService) {
             }
         });
     };
-
 
     $scope.entity = {};
     // 修改密码
@@ -56,7 +54,6 @@ app.controller('userController', function($scope,$location,$http, userService) {
             }
         })
     };
-
 
     // 获取手机号
     $scope.getPhone = function () {
@@ -85,7 +82,6 @@ app.controller('userController', function($scope,$location,$http, userService) {
             }
         });
     };
-
 
     // 验证验证码
     $scope.checkCode = function () {
@@ -128,10 +124,7 @@ app.controller('userController', function($scope,$location,$http, userService) {
         })
     };
 
-
     $scope.status = ['active',''];
-
-
     // 改变样式，实现上一步跳转
     $scope.changeStyle = function (number) {
         if(number == "1"){
@@ -150,11 +143,51 @@ app.controller('userController', function($scope,$location,$http, userService) {
             return;
         }
         $scope.changeStyle(number);
-    }
+    };
 
+    // 图片上传
+    $scope.uploadFile = function () {
+        uploadService.uploadFile().success(function (response) {
+            if(response.success) {
+                $scope.entity1.headPic=response.message;
+                $scope.saveNickName();
+            } else {
+                alert(response.message);
+            }
+        }).error(function () {
+            alert("上传出错");
+        });
+    };
 
+    $scope.loadNickName = function () {
+        userService.loadNickName().success(function (data) {
+            $scope.entity1=data;
+        })
+    };
 
+    $scope.saveNickName =function () {
+        userService.saveNickName($scope.entity1).success(function (data) {
+            if (data.success){
+                alert(data.message)
+            }else {
+                alert(data.message)
+            }
+        })
+    };
 
+    $scope.flag=false;
+    var b=2;
+    $scope.flag1=function () {
+        if (b % 2==0) {
+        $scope.flag=true;
+        }else {
+        $scope.flag=false;
+        }
+        b++;
+    };
 
+    $scope.$watch('entity1.birthday',function (b,d) {
+        $scope.flag=false;
+    });
 
-});	
+});

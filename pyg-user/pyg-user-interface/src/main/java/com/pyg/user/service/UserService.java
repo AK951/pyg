@@ -107,6 +107,10 @@ public interface UserService {
      */
 	boolean checkCode(String phone, String code);
 
+    TbUser loadNickName(String userName);
+
+	void saveNickName(TbUser tbUser);
+
 
 	// 修改密码
 	boolean updatePass(String username,String pass,String newPass);

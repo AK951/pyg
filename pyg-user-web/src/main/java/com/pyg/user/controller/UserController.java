@@ -2,7 +2,6 @@ package com.pyg.user.controller;
 import java.util.List;
 
 import com.pyg.util.PhoneFormatCheckUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -157,6 +156,22 @@ public class UserController {
 			return new InfoResult(false, "发送失败");
 		}
 	}
+	@RequestMapping("/loadNickName")
+	public TbUser loadNickName(HttpServletRequest request){
+		String userName = request.getRemoteUser();
+		TbUser user = userService.loadNickName(userName);
+		return user;
+	}
+	@RequestMapping("/saveNickName")
+	public InfoResult saveNickName(@RequestBody TbUser tbUser){
+		try {
+			userService.saveNickName(tbUser);
+			return new InfoResult(true,"保存成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new InfoResult(false,"保存失败");
+		}
+	}
 
 	@Autowired
 	private HttpServletRequest request;
@@ -208,5 +223,5 @@ public class UserController {
 
 
 
-	
+
 }

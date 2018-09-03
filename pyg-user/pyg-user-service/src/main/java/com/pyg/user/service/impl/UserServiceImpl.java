@@ -237,6 +237,23 @@ public class UserServiceImpl implements UserService {
 		return (smsCode+"").equals(code);
 	}
 
+	@Override
+	public TbUser loadNickName(String userName) {
+		TbUserExample example = new TbUserExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andUsernameEqualTo(userName);
+		List<TbUser> tbUsers = userMapper.selectByExample(example);
+		if (tbUsers!=null){
+			return tbUsers.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	public void saveNickName(TbUser tbUser) {
+		userMapper.updateByPrimaryKeySelective(tbUser);
+	}
+
 
 	// 修改密码
 	@Override
