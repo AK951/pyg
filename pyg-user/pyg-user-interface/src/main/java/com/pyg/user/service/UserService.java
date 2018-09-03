@@ -106,4 +106,8 @@ public interface UserService {
      * @date  2018年08月25日 08:42:03
      */
 	boolean checkCode(String phone, String code);
+
+    TbUser loadNickName(String userName);
+
+	void saveNickName(TbUser tbUser);
 }
