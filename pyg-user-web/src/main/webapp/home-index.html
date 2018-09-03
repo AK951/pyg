@@ -21,8 +21,10 @@
     <!-- 加载js -->
     <script src="js/base_pagination.js"></script>
     <script src="js/service/orderService.js"></script>
+    <script src="js/service/loginService.js"></script>
     <script src="js/controller/baseController.js"></script>
     <script src="js/controller/orderController.js"></script>
+    <script src="js/controller/loginController.js"></script>
 </head>
 
 <body ng-app="pyg" ng-controller="orderController" ng-init="showLoginName()">
@@ -35,7 +37,7 @@
 			<div class="py-container">
 				<div class="shortcut">
 					<ul class="fl">
-						<li class="f-item">品优购欢迎您！</li>
+						<li class="f-item">品优购欢迎您！{{loginName}}</li>
                         <li class="f-item">
                             <span ng-if="loginName==null">请<a href="http://localhost:9106">登录</a></span>
                             <span ng-if="loginName==null"><a href="register.html" target="_blank">免费注册</a></span>
@@ -270,7 +272,7 @@ $(function(){
                                             <td width="10%" class="center" ng-if="$index == 0" rowspan="{{order.orderItemList.length}}">
 												<ul class="unstyled">
 													<li>{{payStatus[order.order.status]}}</li>
-													<li><a href="orderDetail.html" class="btn">订单详情 </a></li>
+													<li><a href="#" ng-click="goto(order.order.orderId);" class="btn">订单详情 </a></li>
 												</ul>
 											</td>
 											<td width="10%" class="center" ng-if="$index == 0" rowspan="{{order.orderItemList.length}}">

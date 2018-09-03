@@ -1,5 +1,5 @@
 // 控制层 
-app.controller('userController', function($scope, userService) {
+app.controller('userController', function($scope, userService,loginService) {
 	
     // 注册
     $scope.save = function () {
@@ -31,6 +31,12 @@ app.controller('userController', function($scope, userService) {
             if(response.message != null) {
                 alert(response.message);
             }
+        });
+    }
+
+    $scope.showLoginName = function () {
+        loginService.showLoginName().success(function (response) {
+            $scope.loginName = response.loginName;
         });
     }
 

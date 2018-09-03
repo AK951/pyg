@@ -1,6 +1,7 @@
 package com.pyg.shop.controller;
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -140,6 +141,46 @@ public class SellerController {
 	@RequestMapping("/search/{page}/{rows}")
 	public PageResult search(@PathVariable Integer page, @PathVariable Integer rows, @RequestBody TbSeller seller){
 		return sellerService.findPage(page, rows, seller);		
+	};
+
+	//商家资料回显
+	@RequestMapping("findSellerForId")
+	public TbSeller findSellerForId(){
+		String name = SecurityContextHolder.getContext().getAuthentication().getName();
+		TbSeller seller = sellerService.findSellerForId(name);
+		return seller;
+	};
+
+	//修改密码
+	@RequestMapping("updatePsw/{oldPsw}/{newPsw}")
+	public InfoResult updatePsw(@PathVariable String oldPsw,@PathVariable String newPsw){
+		try {
+
+			if (newPsw.trim().length()<6 || newPsw.trim().length()>18){
+				return new InfoResult(false,"请输入6-18位的密码");
+			}
+
+			String name = SecurityContextHolder.getContext().getAuthentication().getName();
+
+			// 密码加密
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			String nPsw = passwordEncoder.encode(newPsw);
+
+			TbSeller seller = sellerService.selectPsw(name);
+			boolean flag = passwordEncoder.matches(oldPsw,seller.getPassword());
+			if (flag){
+				seller.setPassword(nPsw);
+				sellerService.updatePsw(seller);
+				return new InfoResult(true,"修改成功");
+			}else {
+				return new InfoResult(false,"原密码不正确");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new InfoResult(false,"修改失败");
+		}
+
+
 	}
-	
+
 }

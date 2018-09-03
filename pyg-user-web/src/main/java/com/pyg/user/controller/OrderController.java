@@ -2,8 +2,10 @@ package com.pyg.user.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pyg.order.service.OrderService;
+import com.pyg.pojo.TbItem;
 import com.pyg.pojo.TbOrder;
 import com.pyg.vo.InfoResult;
+import com.pyg.vo.Order;
 import com.pyg.vo.PageResult;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,7 +53,9 @@ public class OrderController {
 	@RequestMapping("/findPage/{page}/{rows}")
 	public PageResult findPage(@PathVariable Integer page, @PathVariable Integer rows){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		return orderService.findPage(page, rows, username);
+		PageResult pageResult = orderService.findPage(page, rows, username);
+		System.out.println(pageResult.getRows().toString());
+		return pageResult;
 	}
 	
 	/**
@@ -141,5 +145,16 @@ public class OrderController {
 	public PageResult search(@PathVariable Integer page, @PathVariable Integer rows, @RequestBody TbOrder order){
 		return orderService.findPage(page, rows, order);		
 	}
-	
+
+	@RequestMapping("findOneOrder/{id}")
+	public Order findOneOrder(@PathVariable Long id){
+		Order order = orderService.findOrderById(id);
+		return order;
+	}
+
+	@RequestMapping("findSpecForItemId/{itemId}")
+	public TbItem findSpecForItemId(@PathVariable Long itemId){
+		TbItem  tbItem = orderService.findSpecForItemId(itemId);
+		return tbItem;
+	}
 }

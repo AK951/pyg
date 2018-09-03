@@ -5,9 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
-import com.pyg.mapper.TbOrderItemMapper;
-import com.pyg.mapper.TbPayLogMapper;
-import com.pyg.mapper.TbSellerMapper;
+import com.pyg.mapper.*;
 import com.pyg.pojo.*;
 import com.pyg.util.IdWorker;
 import com.pyg.vo.Cart;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.pyg.mapper.TbOrderMapper;
 import com.pyg.pojo.TbOrderExample.Criteria;
 import com.pyg.order.service.OrderService;
 
@@ -45,6 +42,8 @@ public class OrderServiceImpl implements OrderService {
 	private TbSellerMapper sellerMapper;
 	@Autowired
 	private TbPayLogMapper payLogMapper;
+	@Autowired
+	private TbItemMapper itemMapper;
 	
 	/**
      * description: 返回全部列表
@@ -303,6 +302,34 @@ public class OrderServiceImpl implements OrderService {
 		//3.清除redis缓存数据
 		redisTemplate.boundHashOps("payLog").delete(payLog.getUserId());
 
+	}
+
+	@Override
+	public Order findOrderById(Long id) {
+		//获取订单
+		TbOrder tbOrder = orderMapper.selectByPrimaryKey(id);
+		TbOrderItemExample example = new TbOrderItemExample();
+		TbOrderItemExample.Criteria criteria = example.createCriteria();
+		criteria.andOrderIdEqualTo(id);
+		//查询订单明细
+		List<TbOrderItem> orderItemList = orderItemMapper.selectByExample(example);
+		//查询商家
+		TbSeller seller = sellerMapper.selectByPrimaryKey(tbOrder.getSellerId());
+		Order order = new Order();
+		//设置订单
+		order.setOrder(tbOrder);
+		//设置订单明细
+		order.setOrderItemList(orderItemList);
+		//设置商家名称
+		order.setSellerName(seller.getNickName());
+		//返回order包装类对象
+		return order;
+	}
+
+	@Override
+	public TbItem findSpecForItemId(Long itemId) {
+		TbItem item = itemMapper.selectByPrimaryKey(itemId);
+		return item;
 	}
 
 }
