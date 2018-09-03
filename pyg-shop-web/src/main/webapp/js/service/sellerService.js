@@ -29,4 +29,15 @@ app.service('sellerService', function($http) {
     this.search = function (page, rows, searchEntity) {
         return $http.post('../seller/search/' + page + "/" + rows, searchEntity);
     };
+
+    //商家资料回显
+    this.findSellerForId = function () {
+        return $http.get("../seller/findSellerForId");
+    };
+
+    //修改密码
+    this.updatePsw = function (oldPsw,newPsw) {
+        return $http.post("../seller/updatePsw/" + oldPsw + "/" + newPsw);
+    }
+
 });

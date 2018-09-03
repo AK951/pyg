@@ -95,4 +95,10 @@ public interface SellerService {
 	 * @date  2018年08月10日 21:06:38
 	 */
 	void updateStatus(String sellerId, String status);
+
+    TbSeller findSellerForId(String name);
+
+    TbSeller selectPsw(String name);
+
+	void updatePsw(TbSeller seller);
 }

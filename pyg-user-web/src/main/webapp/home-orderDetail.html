@@ -10,9 +10,20 @@
 
     <link rel="stylesheet" type="text/css" href="css/webbase.css" />
     <link rel="stylesheet" type="text/css" href="css/pages-seckillOrder.css" />
+
+	<script src="plugins/jquery/jquery-2.2.3.min.js"></script>
+	<script src="plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="plugins/angularjs/angular.min.js"></script>
+	<!-- 加载js -->
+	<script src="js/base.js"></script>
+	<script src="js/service/orderService.js"></script>
+	<script src="js/service/loginService.js"></script>
+	<script src="js/controller/baseController.js"></script>
+	<script src="js/controller/orderController.js"></script>
+	<script src="js/controller/loginController.js"></script>
 </head>
 
-<body>
+<body ng-app="pyg" ng-controller="orderController" ng-init="showLoginName();findOneOrder()">
     <!-- 头部栏位 -->
     <!--页面顶部-->
 <div id="nav-bottom">
@@ -22,8 +33,10 @@
 			<div class="py-container">
 				<div class="shortcut">
 					<ul class="fl">
-						<li class="f-item">品优购欢迎您！</li>
-						<li class="f-item">请<a href="login.html" target="_blank">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span></li>
+						<li class="f-item">品优购欢迎您！{{loginName}}</li>
+						<span ng-if="loginName==null">请<a href="http://localhost:9106">登录</a></span>
+						<span ng-if="loginName==null"><a href="register.html" target="_blank">免费注册</a></span>
+						<span ng-if="loginName!=null" class="safe"><a href="/logout/cas">退出</a></span>
 					</ul>
 					<ul class="fr">
 						<li class="f-item">我的订单</li>
@@ -248,18 +261,18 @@ $(function(){
                                     </div>
                             </div>
                             <div class="order-state">
-                                <p>当前订单状态：<span class="red">已发货</span></p>
+                                <p>当前订单状态：<span class="red">{{payStatus[orderDetail.order.status]}}</span></p>
                                 <p>还剩06天00小时 自动确认收货</p>
                             </div>
                         </div>
                         <div class="order-info">
                             <h5>订单信息</h5>
-                            <p>收货地址：神茶减肥茶就观察及噶盘滚啊  </p>
-                            <p>订单单号：178789758976986</p>
-                            <p>下单时间：2017-06-04 09：03：03</p>
-                            <p>支付时间：2017-06-05  09：03：03</p>
-                            <p>支付方式：微信</p>
-                            <p>发货时间：201707-06-06 09：03：03</p>
+                            <p>收货地址：{{orderDetail.order.receiverAreaName}}  </p>
+                            <p>订单单号：{{orderDetail.order.orderId}}</p>
+                            <p>下单时间：{{orderDetail.order.createTime}}</p>
+                            <p ng-if="orderDetail.order.status == '2'">支付时间：{{orderDetail.order.paymentTime}}</p>
+                            <p ng-if="orderDetail.order.status == '2'">支付方式：{{paymentType[orderDetail.order.paymentType]}}</p>
+                            <p ng-if="orderDetail.order.status == '2'">发货时间：{{orderDetail.order.consignTime}}</p>
                         </div>
                         <div class="order-goods">
                             <table class="sui-table">
@@ -273,32 +286,34 @@ $(function(){
                              
                                 <tbody>                               
                                     <tr>
-                                        <td colspan="5">订单编号：787587819591509</td>
+                                        <td colspan="5">订单编号：{{orderDetail.order.orderId}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr ng-repeat="orderItem in orderDetail.orderItemList">
                                         <td>
-                                            <div class="typographic"><img src="img/goods.png" />
-                                                    <span>包邮 正品玛姬儿压缩面膜无纺布纸膜100粒 送泡瓶面膜刷喷瓶 新款</span>
-                                                    <span class="guige">规格：温泉喷雾150ml</span>
-                                                </div>
+                                            <div class="typographic">
+												<img style="max-height: 82px;max-width: 82px" src="{{orderItem.picPath}}" />
+												<span>{{orderItem.title}}</span>
+												<!--<span class="guige">规格：{{itemSpec[orderItem.itemId].spec}}</span>-->
+												<span class="guige" ng-repeat="(x,y) in itemSpec[orderItem.itemId].spec">{{x}}：{{y}}</span>
+											</div>
                                         </td>
                                         <td>
                                             <ul class="unstyled">
-                                                    <li class="o-price">¥599.00</li>	
-                                                    <li>¥299.00</li>											
+                                                    <li class="o-price">¥{{orderItem.totalFee+200}}</li>
+                                                    <li>¥{{orderItem.totalFee}}</li>
                                                 </ul>
                                         </td>
-                                        <td>1</td>
+                                        <td>{{orderItem.num}}</td>
                                         <td>无优惠</td>
                                         <td>交易成功</td>
                                     </tr>
                                 </tbody>
                             </table>
                             <div class="order-price">
-                                <p>商品总金额：￥1.8</p>
+                                <p>商品总金额：￥{{totalValue.totalMoney}}</p>
                                 <p>运费金额：，免费用</p>
                                 <p>使用优惠券：无</p>
-                                <h4 class="red">实际支付：￥1.8</h4>
+                                <h4 class="red">实际支付：￥{{totalValue.totalMoney}}</h4>
                             </div>
                             <div class="clearfix"></div>
                         </div>

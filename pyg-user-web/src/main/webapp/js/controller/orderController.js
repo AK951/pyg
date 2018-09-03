@@ -1,5 +1,5 @@
 // 控制层 
-app.controller('orderController', function($scope, $http, $controller, orderService) {
+app.controller('orderController', function($scope, $http,$location,$controller, orderService) {
 	
 $controller('baseController', {$scope: $scope}); // 继承
 
@@ -75,5 +75,43 @@ $controller('baseController', {$scope: $scope}); // 继承
 
     $scope.payStatus = ["","等待买家付款","买家已付款","卖家已发货"];
     $scope.orderStatus = ["","立即付款","提醒发货","确认收货"];
+    $scope.paymentType = ['','微信','货到付款'];
+
+
+    //订单详情
+    $scope.findOneOrder = function () {
+        var id = $location.search()['id'];
+        orderService.findOneOrder(id).success(function (data) {
+            $scope.orderDetail = data;
+            $scope.he();
+            for (var i = 0 ;  i < $scope.orderDetail.orderItemList.length ; i++) {
+                $scope.findSpecForItemId($scope.orderDetail.orderItemList[i].itemId);
+            }
+        })
+    };
+
+    $scope.he = function(){
+        $scope.totalValue={totalNum:0, totalMoney:0.00};//合计实体
+        for(var j=0;j<$scope.orderDetail.orderItemList.length;j++){
+            var orderItem=$scope.orderDetail.orderItemList[j];//购物车明细
+            $scope.totalValue.totalNum+=orderItem.num;
+            $scope.totalValue.totalMoney+= orderItem.totalFee;
+        }
+    };
+
+    $scope.itemSpec = [];
+
+    //查询规格
+    $scope.findSpecForItemId = function(itemId){
+        orderService.findSpecForItemId(itemId).success(function (data) {
+            $scope.itemSpec[itemId] = data;
+            $scope.itemSpec[itemId].spec = JSON.parse($scope.itemSpec[itemId].spec);
+        })
+    };
+
+    //跳转
+    $scope.goto = function (orderId) {
+        location.href ="home-orderDetail.html#?id=" + orderId;
+    }
 
 });	

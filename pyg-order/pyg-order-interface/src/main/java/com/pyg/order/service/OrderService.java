@@ -1,8 +1,11 @@
 package com.pyg.order.service;
 import java.util.List;
+
+import com.pyg.pojo.TbItem;
 import com.pyg.pojo.TbOrder;
 
 import com.pyg.pojo.TbPayLog;
+import com.pyg.vo.Order;
 import com.pyg.vo.PageResult;
 
 /**
@@ -106,4 +109,8 @@ public interface OrderService {
 	 * @date  2018年08月29日 09:15:25
 	 */
 	void updateOrderStatus(String out_trade_no,String transaction_id);
+
+    Order findOrderById(Long id);
+
+	TbItem findSpecForItemId(Long itemId);
 }

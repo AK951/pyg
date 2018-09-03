@@ -220,4 +220,22 @@ public class SellerServiceImpl implements SellerService {
 		sellerMapper.updateByPrimaryKey(seller);
 	}
 
+	@Override
+	public TbSeller findSellerForId(String name) {
+		TbSeller seller = sellerMapper.selectByPrimaryKey(name);
+		return seller;
+
+	}
+
+	@Override
+	public TbSeller selectPsw(String name) {
+		TbSeller seller = sellerMapper.selectByPrimaryKey(name);
+		return seller;
+	}
+
+	@Override
+	public void updatePsw(TbSeller seller) {
+		sellerMapper.updateByPrimaryKeySelective(seller);
+	}
+
 }

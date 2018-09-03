@@ -32,5 +32,8 @@ app.service('sellerService', function($http) {
     // 更新商家状态
     this.updateStatus = function (sellerId, status) {
         return $http.get('../seller/updateStatus/' + sellerId + "/" + status);
-    }
+    };
+
+
+
 });

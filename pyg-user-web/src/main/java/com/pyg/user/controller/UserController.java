@@ -12,7 +12,9 @@ import com.pyg.user.service.UserService;
 
 import com.pyg.vo.PageResult;
 import com.pyg.vo.InfoResult;
- 
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Description: controller
  * @author AK
@@ -154,5 +156,72 @@ public class UserController {
 			return new InfoResult(false, "发送失败");
 		}
 	}
-	
+	@RequestMapping("/loadNickName")
+	public TbUser loadNickName(HttpServletRequest request){
+		String userName = request.getRemoteUser();
+		TbUser user = userService.loadNickName(userName);
+		return user;
+	}
+	@RequestMapping("/saveNickName")
+	public InfoResult saveNickName(@RequestBody TbUser tbUser){
+		try {
+			userService.saveNickName(tbUser);
+			return new InfoResult(true,"保存成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new InfoResult(false,"保存失败");
+		}
+	}
+
+	@Autowired
+	private HttpServletRequest request;
+
+	// 修改密码
+	@RequestMapping("/updatePass/{pass}/{newPass}")
+	public InfoResult updatePass(@PathVariable String pass,@PathVariable String newPass){
+		String username = request.getRemoteUser();
+		boolean flag = userService.updatePass(username, pass, newPass);
+		if(flag){
+			return new InfoResult(false,"密码修改成功");
+		}else{
+			return new InfoResult(true,"旧密码不对,请重输");
+		}
+	}
+
+	// 获取当前用户手机
+	@RequestMapping("/getPhone")
+	public List<TbUser> getPhone(){
+		String username = request.getRemoteUser();
+		List<TbUser> users = userService.getPhone(username);
+		return users;
+	}
+
+	// 验证短信验证码
+	@RequestMapping("/checkCode/{phone}/{checkCode}")
+	public InfoResult checkCode(@PathVariable String phone,@PathVariable String checkCode){
+		if(!userService.checkCode(phone, checkCode)) {
+			return new InfoResult(false, "验证码错误");
+		}else{
+			return new InfoResult(true,"验证通过");
+		}
+	}
+
+	// 更改手机号
+	@RequestMapping("/updatePhone/{newPhone}")
+	public InfoResult updatePhone(@PathVariable String newPhone){
+		try{
+			String username = request.getRemoteUser();
+			userService.updatePhone(username,newPhone);
+			return new InfoResult(true,"手机号更改成功");
+		}catch (Exception e){
+			e.printStackTrace();
+			return new InfoResult(false,"手机号更改失败");
+		}
+
+	}
+
+
+
+
+
 }

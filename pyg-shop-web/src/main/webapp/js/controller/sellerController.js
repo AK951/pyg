@@ -29,12 +29,13 @@ $controller('baseController', {$scope: $scope}); // 继承
     $scope.save = function () {
         sellerService.add($scope.entity).success(function (response) {
             if (response.success) {
-                location.href = "shoplogin.html";
+                location.href = "index.html";
             } else {
                 alert(response.message);
             }
         })
     };
+
 
     // 批量删除
     $scope.del = function () {
@@ -59,5 +60,52 @@ $controller('baseController', {$scope: $scope}); // 继承
             $scope.paginationConf.totalItems = response.total; // 更新总记录数
         })
     };
+
+    //回显资料
+    $scope.findSellerForId = function () {
+        sellerService.findSellerForId().success(function (data) {
+            $scope.entity = data;
+        })
+    };
+
+    // 修改资料
+    $scope.update = function () {
+        sellerService.update($scope.entity).success(function (response) {
+            if (response.success) {
+                alert(response.message);
+                location.href = "seller.html";
+            } else {
+                alert(response.message);
+            }
+        })
+    };
+
+    //修改密码
+    $scope.updatePsw = function () {
+
+        $scope.flag = false;
+        if ($scope.newPsw != $scope.psw){
+            // alert("两次密码不一致!");
+            $scope.flag = true;
+            return;
+        }
+
+        if ($scope.newPsw == '' || $scope.oldPsw == '') {
+            alert("密码不能为空");
+            return;
+        }
+
+        sellerService.updatePsw($scope.oldPsw,$scope.newPsw).success(function (data) {
+            if (data.success){
+                alert(data.message);
+                location.href = "index.html";
+            } else if (data.message === '请输入6-18位的密码'){
+                alert(data.message);
+                return;
+            }else {
+                alert(data.message);
+            }
+        })
+    }
     
 });	

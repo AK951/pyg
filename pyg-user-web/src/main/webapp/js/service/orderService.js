@@ -29,4 +29,25 @@ app.service('orderService', function($http) {
     this.search = function (page, rows, searchEntity) {
         return $http.post('../order/search/' + page + "/" + rows, searchEntity);
     };
+
+    //订单详情
+    this.findOneOrder = function () {
+        return $http.post("./order/findOneOrder/1035152486341541888")
+    };
+
+    //查询规格
+    this.findSpecForItemId = function (itemId) {
+        return $http.post("../order/findSpecForItemId/" + itemId);
+    };
+
+    //求合计
+    this.sum1 = function(orderDetail){
+        var totalValue={totalNum:0, totalMoney:0.00};//合计实体
+            for(var j=0;j<orderDetail.orderItemList.length;j++){
+                var orderItem=orderDetail.orderItemList[j];//购物车明细
+                totalValue.totalNum+=orderItem.num;
+                totalValue.totalMoney+= orderItem.totalFee;
+            }
+        return totalValue;
+    };
 });
