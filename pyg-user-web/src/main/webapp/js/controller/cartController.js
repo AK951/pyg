@@ -30,7 +30,7 @@ app.controller('cartController', function($scope, $http, cartService, addressSer
     // 保存地址
     $scope.saveAddress = function() {
         var serviceObject; // 服务层对象
-        if ($scope.address.id != null) { // 如果有ID
+        if ($scope.entity.id != null) { // 如果有ID
             serviceObject = addressService.update($scope.entity); // 修改
         } else {
             if($scope.addressList.length === 0) {
@@ -68,11 +68,51 @@ app.controller('cartController', function($scope, $http, cartService, addressSer
             }
         });
     };
+   /* //获取地址列表
+    $scope.findAddressList=function(userId){
+        addressService.findAddressList(userId).success(
+            function(response){
+                $scope.addressList=response;
+            }
+        );
+    };*/
 
     // 选中地址
     $scope.selectAddress = function (address) {
         $scope.address = address;
     };
+
+
+    // 删除地址
+    $scope.deleteAddressById = function(id) {
+        addressService.del(id).success(function (response) {
+            if (response.success) {
+                $scope.findAddressList();
+            } else {
+                alert(response.message);
+            }
+        });
+    };
+
+    // 查询实体
+    $scope.findAddressById = function(id) {
+        addressService.findOne(id).success(function (response) {
+            $scope.entity = response;
+        });
+    };
+
+    // 设为默认地址
+    $scope.setDefaultAddress = function(id) {
+        addressService.setDefaultAddress(id).success(function (response) {
+            if (response.success) {
+                $scope.findAddressList();
+            } else {
+                alert(response.message);
+            }
+        });
+    };
+
+
 
     $scope.order={paymentType:'1'};
     // 支付方式
