@@ -10,9 +10,18 @@
 
     <link rel="stylesheet" type="text/css" href="css/webbase.css" />
     <link rel="stylesheet" type="text/css" href="css/pages-seckillOrder.css" />
+
+
+	<script src="plugins/angularjs/angular.min.js"></script>
+	<script src="js/base.js"></script>
+	<script src="js/service/userService.js"></script>
+	<script src="js/controller/userController.js"></script>
+
+
+
 </head>
 
-<body>
+<body ng-app="pyg" ng-controller="userController" ng-init="getPhone();getStyle()">
     <!-- 头部栏位 -->
     <!--页面顶部-->
 <div id="nav-bottom">
@@ -313,43 +322,43 @@ $(function(){
                 <div class="yui3-u-5-6">
                     <div class="body userSafe">
                         <ul class="sui-nav nav-tabs nav-large nav-primary ">
-                            <li class="active"><a href="#one" data-toggle="tab">密码设置</a></li>
-                            <li><a href="#two" data-toggle="tab">绑定手机</a></li>
+                            <li ng-click="changeStyle('1')" class="{{status[0]}}"><a href="#one" data-toggle="tab">密码设置</a></li>
+                            <li ng-click="changeStyle('2')" class="{{status[0]}}"><a href="#two" data-toggle="tab">绑定手机</a></li>
                         </ul>
                         <div class="tab-content ">
-                            <div id="one" class="tab-pane active">
+                            <div id="one" class="tab-pane {{status[0]}}">
                                 <form class="sui-form form-horizontal sui-validate" id="jsForm">
                                     <div class="control-group">
-                                        <label for="inputusername" class="control-label">用户名：</label>
+                                        <label for="inputusername" class="control-label">旧密码：</label>
                                         <div class="controls">
-                                            <input id="pwdid" class="fn-tinput" data-rule-remote="http://www.baidu.com" type="password" name="OldPassword" placeholder="输入昵称"
-                                                required data-msg-required="请输入昵称" minlength="6" data-msg-minlength="至少输入6个字符"
-                                            />
+                                            <input id="pwdid" ng-model="entity.password" class="fn-tinput" data-rule-remote="http://www.baidu.com" type="password" name="OldPassword" placeholder="旧密码"
+                                                required data-msg-required="旧密码" minlength="6" data-msg-minlength="旧密码"
+                                            /><span ng-if="flag" style="color: red">{{errMessage}}</span>
 
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label for="inputPassword" class="control-label">密码：</label>
+                                        <label for="inputPassword" class="control-label">新密码：</label>
                                         <div class="controls">
-                                            <input class="fn-tinput" type="password" name="password" value="" placeholder="新密码" required id="password" data-rule-remote="php.php">
+                                            <input class="fn-tinput" ng-model="entity.newPassword" type="password" name="password" value="" placeholder="新密码" required id="password" data-rule-remote="php.php">
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <label for="inputRepassword" class="control-label">重复密码：</label>
                                         <div class="controls">
-                                            <input class="fn-tinput" type="password" name="confirm_password" value="" placeholder="确认新密码" required equalTo="#password">
+                                            <input class="fn-tinput" ng-model="entity.rePassword" type="password" name="confirm_password" value="" placeholder="确认新密码" required equalTo="#password">
                                         </div>
                                     </div>
 
                                     <div class="control-group">
                                         <label class="control-label"></label>
                                         <div class="controls">
-                                            <button type="submit" class="sui-btn btn-primary">提交按钮</button>
+                                            <button type="submit" ng-click="updatePass()" class="sui-btn btn-primary">提交按钮</button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
-                            <div id="two" class="tab-pane">
+                            <div id="two" class="tab-pane {{status[1]}}">
                                 <!--步骤条-->
                                 <div class="sui-steps steps-auto">
                                     <div class="wrap">
@@ -375,28 +384,19 @@ $(function(){
 
                                     <div class="control-group">
                                         <label for="inputPassword" class="control-label">验证方式：</label>
-                                        <div class="controls fixed">手机验证（138****9856）</div>                            
-                                    </div>
-                                     <div class="control-group">
-                                        <label for="inputcode" class="control-label">验证码：</label>
-                                        <div class="controls">
-                                            <input name="inputcode" type="text" id="inputcode">
-                                        </div>
-                                        <div class="controls">
-                                            验证码
-                                        </div>
+                                        <div class="controls fixed">手机验证（{{mobile}}）</div>
                                     </div>
                                     <div class="control-group">
                                         <label for="inputRepassword" class="control-label">短信验证码：</label>
                                         <div class="controls">
-                                            <input name="msgcode" type="text" id="msgcode">
+                                            <input name="msgcode" ng-model="messCode" type="text" id="msgcode">
                                         </div>
                                         <div class="controls">
-                                            <button class="sui-btn btn-info">发送</button>
+                                            <button ng-click="takeSmsCode()" class="sui-btn btn-info">发送</button>
                                         </div>
                                     </div>
                                     <div class="control-group next-btn">
-                                        <a class="sui-btn btn-primary" href="home-setting-address-phone.html">下一步</a>
+                                        <a class="sui-btn btn-primary" ng-click="checkCode()" href="javascript:void(0)">下一步</a>
                                     </div>
                                 </form>
                             </div>
