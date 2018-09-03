@@ -1,5 +1,5 @@
 // 控制层 
-app.controller('userController', function($scope, userService) {
+app.controller('userController', function($scope,userService,uploadService) {
 	
     // 注册
     $scope.save = function () {
@@ -34,5 +34,51 @@ app.controller('userController', function($scope, userService) {
         });
     }
 
+    // 图片上传
+    $scope.uploadFile = function () {
+        uploadService.uploadFile().success(function (response) {
+            if(response.success) {
+                $scope.entity1.headPic=response.message;
+                $scope.saveNickName();
+            } else {
+                alert(response.message);
+            }
+        }).error(function () {
+            alert("上传出错");
+        });
+    };
 
-});	
+
+    $scope.loadNickName = function () {
+        userService.loadNickName().success(function (data) {
+            $scope.entity1=data;
+        })
+    }
+
+
+    $scope.saveNickName =function () {
+        userService.saveNickName($scope.entity1).success(function (data) {
+            if (data.success){
+                alert(data.message)
+            }else {
+                alert(data.message)
+            }
+        })
+    }
+
+
+    $scope.flag=false;
+    var b=2;
+    $scope.flag1=function () {
+        if (b % 2==0) {
+        $scope.flag=true;
+        }else {
+        $scope.flag=false;
+        }
+        b++;
+    }
+    $scope.$watch('entity1.birthday',function (b,d) {
+        $scope.flag=false;
+    })
+
+});

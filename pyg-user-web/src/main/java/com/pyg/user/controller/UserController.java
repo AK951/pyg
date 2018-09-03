@@ -12,7 +12,9 @@ import com.pyg.user.service.UserService;
 
 import com.pyg.vo.PageResult;
 import com.pyg.vo.InfoResult;
- 
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Description: controller
  * @author AK
@@ -152,6 +154,22 @@ public class UserController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new InfoResult(false, "发送失败");
+		}
+	}
+	@RequestMapping("/loadNickName")
+	public TbUser loadNickName(HttpServletRequest request){
+		String userName = request.getRemoteUser();
+		TbUser user = userService.loadNickName(userName);
+		return user;
+	}
+	@RequestMapping("/saveNickName")
+	public InfoResult saveNickName(@RequestBody TbUser tbUser){
+		try {
+			userService.saveNickName(tbUser);
+			return new InfoResult(true,"保存成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new InfoResult(false,"保存失败");
 		}
 	}
 	

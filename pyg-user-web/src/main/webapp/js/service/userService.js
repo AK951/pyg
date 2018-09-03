@@ -8,4 +8,12 @@ app.service('userService', function($http) {
     this.getSmsCode = function (phone) {
         return $http.get('user/getSmsCode/' + phone);
     };
+    this.loadNickName = function () {
+        return $http.get('user/loadNickName');
+    };
+    this.saveNickName = function (entity1) {
+        return $http.post('user/saveNickName',entity1);
+    };
+
+
 });
