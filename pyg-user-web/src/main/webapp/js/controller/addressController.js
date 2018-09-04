@@ -1,6 +1,6 @@
 // 控制层 
-app.controller('cartController', function($scope, $http, cartService, addressService) {
-	
+app.controller('addressController', function($scope, $http, addressService) {
+
     // 购物车列表
     $scope.findCartList = function () {
         cartService.findCartList().success(function (response) {
@@ -21,9 +21,9 @@ app.controller('cartController', function($scope, $http, cartService, addressSer
     };
 
     // 获取登录用户名
-    $scope.showLoginName = function () {
-        $http.get('login/showName').success(function (response) {
-            $scope.loginName = response.loginName;
+    $scope.showLoginUser = function () {
+        $http.get('login/showUser').success(function (response) {
+            $scope.loginUser = response;
         });
     };
 

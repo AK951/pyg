@@ -107,9 +107,20 @@ public interface UserService {
      */
 	boolean checkCode(String phone, String code);
 
+	/**
+	 * description: 根据username查询user
+	 *
+	 * @param username
+	 * @return com.pyg.pojo.TbUser
+	 * @author AK
+	 * @date  2018年09月03日 20:51:56
+	 */
+	TbUser findUserByUserName(String username);
+
     TbUser loadNickName(String userName);
 
 	void saveNickName(TbUser tbUser);
+
 
 
 	// 修改密码

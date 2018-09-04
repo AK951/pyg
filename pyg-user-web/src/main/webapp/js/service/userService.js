@@ -15,9 +15,6 @@ app.service('userService', function($http) {
         return $http.post('user/saveNickName',entity1);
     };
 
-
-
-
     // 修改密码
     this.updatePass = function (pass,newPass) {
         return $http.get("../user/updatePass/"+pass+"/"+newPass);
@@ -39,7 +36,5 @@ app.service('userService', function($http) {
     this.updatePhone = function (newPhone) {
         return $http.get("../user/updatePhone/"+newPhone);
     }
-
-
 
 });

@@ -13,8 +13,9 @@
     <!-- 2,注解驱动  默认:Jackson-->
     <mvc:annotation-driven>
         <!-- 指定使用fastJson进行json格式和pojo对象相互转换  -->
-        <mvc:message-converters register-defaults="true">
+        <mvc:message-converters>
             <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="fastJsonConfig" ref="fastJsonConfigExt" />
                 <property name="supportedMediaTypes" value="application/json"/>
                 <property name="features">
                     <array>
@@ -35,6 +36,9 @@
         <!-- 设定文件上传的最大值5MB,5*1024*1024 -->
         <property name="maxUploadSize" value="5242880"/>
     </bean>
+
+    <!--解决fastJson 转换long型，精度丢失的问题-->
+    <bean id="fastJsonConfigExt" class="com.pyg.user.mapper.FastJsonConfigExt"/>
 
     <!-- 引用dubbo 服务 -->
     <!-- 定义表现层服务名称: 服务消费者名称 -->

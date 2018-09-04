@@ -312,6 +312,7 @@ public class OrderServiceImpl implements OrderService {
             TbOrder order = orderMapper.selectByPrimaryKey(Long.parseLong(orderId));
             if(order != null) {
                 order.setStatus("2"); // 已付款
+                order.setPaymentTime(new Date()); // 付款时间
                 orderMapper.updateByPrimaryKey(order);
             }
         }

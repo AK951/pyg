@@ -1,6 +1,11 @@
 package com.pyg.user.controller;
 
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.pyg.pojo.TbUser;
+import com.pyg.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,12 +22,15 @@ import java.util.Map;
 @RestController
 @RequestMapping("/login")
 public class LoginController {
+    @Reference
+    private UserService userService;
 
-    @RequestMapping("/showName")
-    public Map showName() {
+    @RequestMapping("/showUser")
+    public TbUser showName() {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        Map map = new HashMap();
-        map.put("loginName", name);
-        return map;
+        if(!StringUtils.isEmpty(name)) {
+            return userService.findUserByUserName(name);
+        }
+        return null;
     }
 }

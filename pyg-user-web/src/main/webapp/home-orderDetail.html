@@ -17,13 +17,11 @@
 	<!-- 加载js -->
 	<script src="js/base.js"></script>
 	<script src="js/service/orderService.js"></script>
-	<script src="js/service/loginService.js"></script>
 	<script src="js/controller/baseController.js"></script>
 	<script src="js/controller/orderController.js"></script>
-	<script src="js/controller/loginController.js"></script>
 </head>
 
-<body ng-app="pyg" ng-controller="orderController" ng-init="showLoginName();findOneOrder()">
+<body ng-app="pyg" ng-controller="orderController" ng-init="showLoginUser();findOneOrder()">
     <!-- 头部栏位 -->
     <!--页面顶部-->
 <div id="nav-bottom">
@@ -33,10 +31,12 @@
 			<div class="py-container">
 				<div class="shortcut">
 					<ul class="fl">
-						<li class="f-item">品优购欢迎您！{{loginName}}</li>
-						<span ng-if="loginName==null">请<a href="http://localhost:9106">登录</a></span>
-						<span ng-if="loginName==null"><a href="register.html" target="_blank">免费注册</a></span>
-						<span ng-if="loginName!=null" class="safe"><a href="/logout/cas">退出</a></span>
+						<li class="f-item">品优购欢迎您！</li>
+						<li class="f-item">
+							<span ng-if="loginUser.username == null">请<a href="http://localhost:9106">登录</a></span>
+							<span ng-if="loginUser.username == null"><a href="register.html" target="_blank">免费注册</a></span>
+							<span ng-if="loginUser.username != null" class="safe"><a href="/logout/cas">退出</a></span>
+						</li>
 					</ul>
 					<ul class="fr">
 						<li class="f-item">我的订单</li>
@@ -164,11 +164,13 @@ $(function(){
                 <div class="yui3-u-1-6 list">
 
                     <div class="person-info">
-                        <div class="person-photo"><img src="img/_/photo.png" alt=""></div>
-                        <div class="person-account">
-                            <span class="name">Michelle</span>
-                            <span class="safe">账户安全</span>
-                        </div>
+						<div class="person-photo">
+							<img style="max-width: 48px; max-height: 48px" src="{{loginUser.headPic}}" alt="">
+						</div>
+						<div class="person-account">
+							<span class="name">{{loginUser.username}}</span>
+							<span class="safe">账户安全</span>
+						</div>
                         <div class="clearfix"></div>
                     </div>
                      <div class="list-items">
@@ -210,8 +212,8 @@ $(function(){
                                         </div>
                                         <label>
                                             <span>提交订单</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+                                            <span>{{orderDetail.order.createTime.substr(0,10)}}</span>
+                                            <span>{{orderDetail.order.createTime.substr(11,8)}}</span>
                                         </label>
                                     </div>
                                     <div class="current">
@@ -221,8 +223,8 @@ $(function(){
                                         </div>
                                         <label>
                                             <span>付款成功</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+											<span>{{orderDetail.order.paymentTime.substr(0,10)}}</span>
+											<span>{{orderDetail.order.paymentTime.substr(11,8)}}</span>
                                         </label>
                                     </div>
                                     <div class="todo">
@@ -232,8 +234,8 @@ $(function(){
                                         </div>
                                         <label>
                                             <span>发货</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+											<span>{{orderDetail.order.consigntime.substr(0,10)}}</span>
+											<span>{{orderDetail.order.consigntime.substr(11,8)}}</span>
                                         </label>
                                     </div>
                                     <div class="todo">
@@ -243,8 +245,8 @@ $(function(){
                                         </div>
                                         <label>
                                             <span>确认收货</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+											<span>{{orderDetail.order.endTime.substr(0,10)}}</span>
+											<span>{{orderDetail.order.endTime.substr(11,8)}}</span>
                                         </label>
                                     </div>
                                     
@@ -254,8 +256,8 @@ $(function(){
                                         </div>
                                         <label>
                                             <span>评价晒单</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+											<span>{{orderDetail.order.endTime.substr(0,10)}}</span>
+											<span>{{orderDetail.order.endTime.substr(11,8)}}</span>
                                         </label>
                                     </div>
                                     </div>
@@ -292,7 +294,7 @@ $(function(){
                                         <td>
                                             <div class="typographic">
 												<img style="max-height: 82px;max-width: 82px" src="{{orderItem.picPath}}" />
-												<span>{{orderItem.title}}</span>
+												<span style="margin-bottom:10px">{{orderItem.title}}</span>
 												<!--<span class="guige">规格：{{itemSpec[orderItem.itemId].spec}}</span>-->
 												<span class="guige" ng-repeat="(x,y) in itemSpec[orderItem.itemId].spec">{{x}}：{{y}}</span>
 											</div>

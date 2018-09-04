@@ -2,6 +2,7 @@ package com.pyg.user.controller;
 import java.util.List;
 
 import com.pyg.util.PhoneFormatCheckUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

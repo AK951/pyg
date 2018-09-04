@@ -31,13 +31,13 @@ app.service('orderService', function($http) {
     };
 
     //订单详情
-    this.findOneOrder = function () {
-        return $http.post("./order/findOneOrder/1035152486341541888")
+    this.findOneOrder = function (id) {
+        return $http.get("../order/findOneOrder/" + id);
     };
 
     //查询规格
     this.findSpecForItemId = function (itemId) {
-        return $http.post("../order/findSpecForItemId/" + itemId);
+        return $http.get("../order/findSpecForItemId/" + itemId);
     };
 
     //求合计

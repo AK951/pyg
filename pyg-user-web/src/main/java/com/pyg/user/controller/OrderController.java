@@ -148,13 +148,11 @@ public class OrderController {
 
 	@RequestMapping("findOneOrder/{id}")
 	public Order findOneOrder(@PathVariable Long id){
-		Order order = orderService.findOrderById(id);
-		return order;
+		return orderService.findOrderById(id);
 	}
 
 	@RequestMapping("findSpecForItemId/{itemId}")
 	public TbItem findSpecForItemId(@PathVariable Long itemId){
-		TbItem  tbItem = orderService.findSpecForItemId(itemId);
-		return tbItem;
+		return orderService.findSpecForItemId(itemId);
 	}
 }

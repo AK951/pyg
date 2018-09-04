@@ -237,7 +237,18 @@ public class UserServiceImpl implements UserService {
 		return (smsCode+"").equals(code);
 	}
 
-	@Override
+    @Override
+    public TbUser findUserByUserName(String username) {
+		TbUserExample example = new TbUserExample();
+		example.createCriteria().andUsernameEqualTo(username);
+		List<TbUser> users = userMapper.selectByExample(example);
+		if (users != null){
+			return users.get(0);
+		}
+		return null;
+	}
+
+    @Override
 	public TbUser loadNickName(String userName) {
 		TbUserExample example = new TbUserExample();
 		Criteria criteria = example.createCriteria();

@@ -1,14 +1,22 @@
 // 控制层 
-app.controller('userController', function($scope,$location,userService,uploadService,loginService) {
+app.controller('userController', function ($scope, $http, $location, $filter, userService, uploadService) {
+
+    // 获取登录用户
+    $scope.showLoginUser = function () {
+        $http.get('login/showUser').success(function (response) {
+            $scope.loginUser = response;
+            $scope.loginUser.birthday = $scope.loginUser.birthday.substr(0, 10);
+        });
+    };
 
     // 注册
     $scope.save = function () {
-        if($scope.entity.username == null || $scope.entity.password == null ||
+        if ($scope.entity.username == null || $scope.entity.password == null ||
             $scope.entity.phone == null || $scope.code == null) {
             alert("注册信息不能为空");
             return;
         }
-        if($scope.entity.password !== $scope.password) {
+        if ($scope.entity.password !== $scope.password) {
             alert("两次密码不一致");
             return;
         }
@@ -23,12 +31,12 @@ app.controller('userController', function($scope,$location,userService,uploadSer
 
     // 发送短信验证码
     $scope.getSmsCode = function () {
-        if($scope.entity.phone == null) {
+        if ($scope.entity.phone == null) {
             alert("手机号不能为空");
             return;
         }
         userService.getSmsCode($scope.entity.phone).success(function (response) {
-            if(response.message != null) {
+            if (response.message != null) {
                 alert(response.message);
             }
         });
@@ -37,17 +45,17 @@ app.controller('userController', function($scope,$location,userService,uploadSer
     $scope.entity = {};
     // 修改密码
     $scope.updatePass = function () {
-        if($scope.entity.newPassword != $scope.entity.rePassword){
+        if ($scope.entity.newPassword != $scope.entity.rePassword) {
             $scope.flag = false;
             alert("新密码前后不一致");
             $scope.entity = {};
             return;
         }
-        userService.updatePass($scope.entity.password,$scope.entity.newPassword).success(function (data) {
-            if(data.success){
+        userService.updatePass($scope.entity.password, $scope.entity.newPassword).success(function (data) {
+            if (data.success) {
                 $scope.flag = data.success;
                 $scope.errMessage = data.message;
-            }else{
+            } else {
                 alert(data.message);
                 $scope.flag = false;
                 $scope.entity = {};
@@ -58,12 +66,12 @@ app.controller('userController', function($scope,$location,userService,uploadSer
     // 获取手机号
     $scope.getPhone = function () {
         userService.getPhone().success(function (data) {
-            for(var i=0; i<data.length; i++){
+            for (var i = 0; i < data.length; i++) {
                 $scope.entity2 = data[i];
                 $scope.mobile = data[i].phone;
-                for(var i=0; i<$scope.mobile.length; i++){
-                    if(i>=3 && i<=6){
-                        $scope.mobile = $scope.mobile.substr(0,3)+"****"+$scope.mobile.substr(7);
+                for (var i = 0; i < $scope.mobile.length; i++) {
+                    if (i >= 3 && i <= 6) {
+                        $scope.mobile = $scope.mobile.substr(0, 3) + "****" + $scope.mobile.substr(7);
                     }
                 }
             }
@@ -72,12 +80,12 @@ app.controller('userController', function($scope,$location,userService,uploadSer
 
     // 获取短信验证码
     $scope.takeSmsCode = function () {
-        if($scope.entity2.phone == null) {
+        if ($scope.entity2.phone == null) {
             alert("手机号不能为空");
             return;
         }
         userService.getSmsCode($scope.entity2.phone).success(function (response) {
-            if(response.message != null) {
+            if (response.message != null) {
                 alert("发送成功");
             }
         });
@@ -85,31 +93,32 @@ app.controller('userController', function($scope,$location,userService,uploadSer
 
     // 验证验证码
     $scope.checkCode = function () {
-        if($scope.messCode == null){
+        if ($scope.messCode == null) {
             alert("验证码不能为空");
             return;
         }
-        userService.checkCode($scope.entity2.phone,$scope.messCode).success(function (data) {
-            if(data.success){
+        userService.checkCode($scope.entity2.phone, $scope.messCode).success(function (data) {
+            if (data.success) {
                 $scope.messCode = "";
                 alert("验证通过");
                 location.href = "home-setting-address-phone.html";
-            }else{
+            } else {
                 alert(data.message);
             }
         })
     };
 
+    // 检测验证码
     $scope.check2Code = function () {
-        if($scope.mess2Code == null){
+        if ($scope.mess2Code == null) {
             alert("验证码不能为空");
             return;
         }
-        userService.checkCode($scope.entity2.phone,$scope.mess2Code).success(function (data) {
-            if(data.success){
+        userService.checkCode($scope.entity2.phone, $scope.mess2Code).success(function (data) {
+            if (data.success) {
                 $scope.updatePhone($scope.entity2.phone);
                 location.href = "home-setting-address-complete.html";
-            }else{
+            } else {
                 alert(data.message);
             }
         })
@@ -118,19 +127,20 @@ app.controller('userController', function($scope,$location,userService,uploadSer
     // 更改手机号
     $scope.updatePhone = function (newPhone) {
         userService.updatePhone(newPhone).success(function (data) {
-            if(data.success){
+            if (data.success) {
                 alert(data.message);
             }
         })
     };
 
-    $scope.status = ['active',''];
+
+    $scope.status = ['active', ''];
     // 改变样式，实现上一步跳转
     $scope.changeStyle = function (number) {
-        if(number == "1"){
+        if (number == "1") {
             $scope.status[0] = 'active';
             $scope.status[1] = '';
-        }else if(number == "2"){
+        } else if (number == "2") {
             $scope.status[0] = '';
             $scope.status[1] = 'active';
         }
@@ -138,8 +148,9 @@ app.controller('userController', function($scope,$location,userService,uploadSer
 
     // 接收setting-safe传递过来的参数
     $scope.getStyle = function () {
+        $scope.status[0] = 'active';
         var number = $location.search()['number'];
-        if(number === undefined){
+        if (number === undefined) {
             return;
         }
         $scope.changeStyle(number);
@@ -148,8 +159,8 @@ app.controller('userController', function($scope,$location,userService,uploadSer
     // 图片上传
     $scope.uploadFile = function () {
         uploadService.uploadFile().success(function (response) {
-            if(response.success) {
-                $scope.entity1.headPic=response.message;
+            if (response.success) {
+                $scope.loginUser.headPic = response.message;
                 $scope.saveNickName();
             } else {
                 alert(response.message);
@@ -159,41 +170,16 @@ app.controller('userController', function($scope,$location,userService,uploadSer
         });
     };
 
-    $scope.loadNickName = function () {
-        userService.loadNickName().success(function (data) {
-            $scope.entity1=data;
-        })
-    };
-
-    $scope.showLoginName = function () {
-        loginService.showLoginName().success(function (response) {
-            $scope.loginName = response.loginName;
-        });
-    }
-
-    $scope.saveNickName =function () {
-        userService.saveNickName($scope.entity1).success(function (data) {
-            if (data.success){
-                alert(data.message)
-            }else {
-                alert(data.message)
+    $scope.saveNickName = function () {
+        userService.saveNickName($scope.loginUser).success(function (response) {
+            if (response.success) {
+                alert(response.message)
+            } else {
+                alert(response.message)
             }
         })
     };
 
-    $scope.flag=false;
-    var b=2;
-    $scope.flag1=function () {
-        if (b % 2==0) {
-        $scope.flag=true;
-        }else {
-        $scope.flag=false;
-        }
-        b++;
-    };
 
-    $scope.$watch('entity1.birthday',function (b,d) {
-        $scope.flag=false;
-    });
 
-});	
+});
