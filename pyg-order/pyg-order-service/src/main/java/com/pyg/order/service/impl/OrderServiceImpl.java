@@ -74,10 +74,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * description: 分页返回全部列表
+     * description: 分页返回当前用户的订单列表
      *
      * @param page 当前页面
      * @param rows 每页记录数
+     * @param userId 用户id
      * @return com.pyg.vo.PageResult
      * @author AK
      * @date  2018年08月09日 10:00:00
@@ -321,7 +322,14 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-
+    /**
+     * description: 根据订单id返回订单包装类对象
+     *
+     * @param id 订单id
+     * @return com.pyg.vo.Order
+     * @author AK
+     * @date  2018年09月06日 21:12:47
+     */
 	public Order findOrderById(Long id) {
 		//获取订单
 		TbOrder tbOrder = orderMapper.selectByPrimaryKey(id);
@@ -349,7 +357,16 @@ public class OrderServiceImpl implements OrderService {
 		return item;
 	}
 
+    /**
+     * description: 获取要下单的购物车明细
+     *
+     * @param username 登录用户名
+     * @return java.util.List<com.pyg.vo.Cart>
+     * @author AK
+     * @date  2018年09月06日 21:14:30
+     */
     private List<Cart> findOrderCartList(String username) {
+        // 获取该用户的购物车
         List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("cartList").get(username);
         if(cartList != null) {
             for (int i = 0; i < cartList.size(); i++) {
@@ -357,20 +374,32 @@ public class OrderServiceImpl implements OrderService {
                 List<CartItem> orderItemList = cart.getOrderItemList();
                 for (int j = 0; j < orderItemList.size(); j++) {
                     CartItem orderItem = orderItemList.get(j);
+                    // 去除没有选中的购物车明细
                     if(!orderItem.isCartStatus()) {
                         orderItemList.remove(orderItem);
+                        j--;
                     }
                 }
                 if(orderItemList.size() == 0) {
                     cartList.remove(cart);
+                    i--;
                 }
             }
         } else {
             cartList = new ArrayList<>();
         }
+        // 返回全部选中的购物车列表
         return cartList;
     }
 
+    /**
+     * description: 完成订单后,删除redis中选中的明细
+     *
+     * @param username 登录用户名
+     * @return void
+     * @author AK
+     * @date  2018年09月06日 21:14:11
+     */
     private void deleteOrderCartList(String username) {
         List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("cartList").get(username);
         if(cartList != null) {
@@ -379,12 +408,14 @@ public class OrderServiceImpl implements OrderService {
                 List<CartItem> orderItemList = cart.getOrderItemList();
                 for (int j = 0; j < orderItemList.size(); j++) {
                     CartItem orderItem = orderItemList.get(j);
-                    if(!orderItem.isCartStatus()) {
+                    if(orderItem.isCartStatus()) {
                         orderItemList.remove(orderItem);
+                        j--;
                     }
                 }
                 if(orderItemList.size() == 0) {
                     cartList.remove(cart);
+                    i--;
                 }
             }
             if(cartList != null) {

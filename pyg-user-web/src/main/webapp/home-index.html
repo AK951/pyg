@@ -246,13 +246,14 @@
 										<td width="35%">
 											<div class="typographic">
 												<img style="max-height: 80px; max-width: 80px; border: 1px solid #DDDDDD; padding: 2px" src="{{orderItem.picPath}}" />
-												<a href="#" class="block-text">{{orderItem.title}}</a><br>
-												<span class="guige">规格：温泉喷雾150ml</span>
+												<a href="#" class="block-text" style="margin-bottom:10px">{{orderItem.title}}</a><br>
+												<span class="guige">网络：移动4G</span><br><br
+												<span class="guige">机身内存：32G</span>
 											</div>
 										</td>
 										<td width="5%" class="center">
 											<ul class="unstyled">
-												<li class="o-price">¥599.00</li>
+												<li class="o-price">¥{{orderItem.price.toFixed(2)+200}}</li>
 												<li>¥{{orderItem.price.toFixed(2)}}</li>
 											</ul>
 										</td>

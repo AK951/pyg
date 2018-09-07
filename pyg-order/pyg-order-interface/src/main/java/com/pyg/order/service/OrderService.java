@@ -27,10 +27,11 @@ public interface OrderService {
 	List<TbOrder> findAll();
 		
 	/**
-     * description: 分页返回全部列表
+     * description: 分页返回当前用户的订单列表
      *
      * @param page 当前页面
      * @param rows 每页记录数
+	 * @param userId 用户id
      * @return com.pyg.vo.PageResult
      * @author AK
      * @date  2018年08月09日 10:00:00
@@ -110,6 +111,14 @@ public interface OrderService {
 	 */
 	void updateOrderStatus(String out_trade_no,String transaction_id);
 
+	/**
+	 * description: 根据订单id返回订单包装类对象
+	 *
+	 * @param id 订单id
+	 * @return com.pyg.vo.Order
+	 * @author AK
+	 * @date  2018年09月06日 21:12:47
+	 */
     Order findOrderById(Long id);
 
 	TbItem findSpecForItemId(Long itemId);

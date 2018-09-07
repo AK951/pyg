@@ -73,7 +73,7 @@ public class CartController {
      * @author AK
      * @date  2018年09月03日 14:50:56
      */
-    @CrossOrigin(origins={"http://localhost:9104", "http://localhost:9105"},allowCredentials="true")
+    @CrossOrigin(origins="*",allowCredentials="true")
     @RequestMapping("/addGoodsToCartList/{itemId}/{num}")
     public InfoResult addGoodsToCartList(@PathVariable Long itemId, @PathVariable Integer num) {
 
@@ -99,6 +99,16 @@ public class CartController {
 
     }
 
+    /**
+     * description: 从购物车中更新商品选中状态
+     *
+     * @param cartList 购物车
+     * @param status 选中状态
+     * @param itemId skuid
+     * @return com.pyg.vo.InfoResult
+     * @author AK
+     * @date  2018年09月06日 21:06:55
+     */
     @RequestMapping("/updateStatus/{status}/{itemId}")
     public InfoResult updateStatus(@RequestBody List<Cart> cartList, @PathVariable boolean status, @PathVariable Long itemId) {
         //得到登陆人账号,判断当前是否有人登陆
@@ -121,6 +131,13 @@ public class CartController {
         }
     }
 
+    /**
+     * description: 从购物车中查询需要下单的商品
+     *
+     * @return java.util.List<com.pyg.vo.Cart>
+     * @author AK
+     * @date  2018年09月06日 21:06:47
+     */
     @RequestMapping("/findOrderCartList")
     public List<Cart> findOrderCartList() {
         //得到登陆人账号,判断当前是否有人登陆

@@ -125,6 +125,15 @@ public class CartServiceImpl implements CartService {
         redisTemplate.boundHashOps("cartList").put(username, cartList);
     }
 
+    /**
+     * description: 合并购物车
+     *
+     * @param cartList1 cookie购物车
+     * @param cartList2 redis购物车
+     * @return java.util.List<com.pyg.vo.Cart>
+     * @author AK
+     * @date  2018年08月26日 10:27:02
+     */
     @Override
     public List<Cart> mergeCartList(List<Cart> cartList1, List<Cart> cartList2) {
         for(Cart cart: cartList2){
@@ -135,6 +144,14 @@ public class CartServiceImpl implements CartService {
         return cartList1;
     }
 
+    /**
+     * description: 从购物车中查询需要下单的商品
+     *
+     * @param cartList 购物车
+     * @return java.util.List<com.pyg.vo.Cart>
+     * @author AK
+     * @date  2018年09月03日 16:19:29
+     */
     @Override
     public List<Cart> findOrderCartList(List<Cart> cartList) {
         if(cartList != null) {
@@ -145,10 +162,12 @@ public class CartServiceImpl implements CartService {
                     CartItem orderItem = orderItemList.get(j);
                     if(!orderItem.isCartStatus()) {
                         orderItemList.remove(orderItem);
+                        j--;
                     }
                 }
                 if(orderItemList.size() == 0) {
                     cartList.remove(cart);
+                    i--;
                 }
             }
         } else {
@@ -157,21 +176,29 @@ public class CartServiceImpl implements CartService {
         return cartList;
     }
 
+    /**
+     * description: 从购物车中更新商品选中状态
+     *
+     * @param cartList 购物车
+     * @param status 选中状态
+     * @param itemId skuid
+     * @return java.util.List<com.pyg.vo.Cart>
+     * @author AK
+     * @date  2018年09月06日 21:01:11
+     */
     @Override
     public List<Cart> updateStatus(List<Cart> cartList, boolean status, Long itemId) {
-        //1.根据商品SKU ID查询SKU商品信息
+        // 根据商品SKU ID查询SKU商品信息
         TbItem item = itemMapper.selectByPrimaryKey(itemId);
-
-        //2.获取商家ID
+        // 获取商家ID
         String sellerId = item.getSellerId();
-        //3.根据商家ID判断购物车列表中是否存在该商家的购物车
+        // 根据商家ID获取该商家的购物车
         Cart cart = searchCartBySellerId(cartList, sellerId);
-
-        // 查询购物车明细列表中是否存在该商品
+        // 根据itemId获取该购物车明细
         CartItem orderItem = searchOrderItemByItemId(cart.getOrderItemList(), itemId);
-
-        //5.2. 如果有，在原购物车明细上添加数量，更改金额
+        // 根据传入的状态更新此购物车明细
         orderItem.setCartStatus(status);
+        // 返回购物车列表
         return cartList;
     }
 
@@ -212,7 +239,7 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * description: 创建订单明细
+     * description: 创建购物车明细
      *
      * @param item 商品
      * @param num 数量

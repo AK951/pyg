@@ -293,7 +293,7 @@ $(function(){
                                     <tr ng-repeat="orderItem in orderDetail.orderItemList">
                                         <td>
                                             <div class="typographic">
-												<img style="max-height: 82px;max-width: 82px" src="{{orderItem.picPath}}" />
+												<img style="max-height: 82px; max-width: 82px; border: 1px solid #DDDDDD; padding: 2px" src="{{orderItem.picPath}}" />
 												<span style="margin-bottom:10px">{{orderItem.title}}</span>
 												<!--<span class="guige">规格：{{itemSpec[orderItem.itemId].spec}}</span>-->
 												<span class="guige" ng-repeat="(x,y) in itemSpec[orderItem.itemId].spec">{{x}}：{{y}}</span>

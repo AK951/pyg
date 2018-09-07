@@ -35,6 +35,6 @@ public class LoginController {
     @RequestMapping("/logout")
     public void logout() throws Exception {
         request.getSession().invalidate();
-        response.sendRedirect("http://192.168.25.128:9100/cas/logout?service=http://localhost:9107/cart.html");
+        response.sendRedirect("http://192.168.95.233:9100/cas/logout?service=http://192.168.95.88:9107/cart.html");
     }
 }

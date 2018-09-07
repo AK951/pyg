@@ -49,8 +49,8 @@ public interface CartService {
     /**
      * description: 合并购物车
      *
-     * @param cartList1
-     * @param cartList2
+     * @param cartList1 cookie购物车
+     * @param cartList2 redis购物车
      * @return java.util.List<com.pyg.vo.Cart>
      * @author AK
      * @date  2018年08月26日 10:27:02
@@ -58,14 +58,24 @@ public interface CartService {
     public List<Cart> mergeCartList(List<Cart> cartList1,List<Cart> cartList2);
 
     /**
-     * description:
+     * description: 从购物车中查询需要下单的商品
      *
-     * @param cartList
+     * @param cartList 购物车
      * @return java.util.List<com.pyg.vo.Cart>
      * @author AK
      * @date  2018年09月03日 16:19:29
      */
     public List<Cart> findOrderCartList(List<Cart> cartList);
 
+    /**
+     * description: 从购物车中更新商品选中状态
+     *
+     * @param cartList 购物车
+     * @param status 选中状态
+     * @param itemId skuid
+     * @return java.util.List<com.pyg.vo.Cart>
+     * @author AK
+     * @date  2018年09月06日 21:01:11
+     */
     List<Cart> updateStatus(List<Cart> cartList, boolean status, Long itemId);
 }

@@ -23,6 +23,7 @@ app.controller('userController', function ($scope, $http, $location, $filter, us
         userService.add($scope.entity, $scope.code).success(function (response) {
             if (response.success) {
                 alert(response.message);
+                location.href = "http:192.168.95.88:9106"
             } else {
                 alert(response.message);
             }
