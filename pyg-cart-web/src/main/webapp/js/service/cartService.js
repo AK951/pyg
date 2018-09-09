@@ -31,8 +31,31 @@ app.service('cartService', function($http) {
         return $http.post('order/add', order);
     };
     // 更改购物车状态
-    this.updateStatus = function (status, ids, cartList) {
-        return $http.post('cart/updateStatus/' + status + "/" + ids, cartList);
+    this.updateStatus = function (cartList) {
+        return $http.post('cart/updateStatus', cartList);
+    };
+    //求合计
+    this.selectAll = function(cartList, status){
+        for(var i=0;i<cartList.length;i++){
+            var cart=cartList[i];
+            cart.cartStatus = status;
+            cart.cartNum = status ? cart.orderItemList.length : 0;
+            for(var j=0;j<cart.orderItemList.length;j++){
+                var orderItem=cart.orderItemList[j];//购物车明细
+                orderItem.cartStatus = status;
+            }
+        }
+        return cartList;
+    };
+    //求合计
+    this.checkStatus = function(cartList){
+        for(var i=0;i<cartList.length;i++){
+            var cart=cartList[i];
+            if(!cart.cartStatus) {
+                return false;
+            }
+        }
+        return true;
     };
 
 });

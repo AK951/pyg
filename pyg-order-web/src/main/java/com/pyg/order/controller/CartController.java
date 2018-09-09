@@ -66,36 +66,10 @@ public class CartController {
         }
     }
 
-    @CrossOrigin(origins={"http://localhost:9104", "http://localhost:9105"},allowCredentials="true")
-    @RequestMapping("/addGoodsToCartList/{itemId}/{num}")
-    public InfoResult addGoodsToCartList(@PathVariable Long itemId, @PathVariable Integer num) {
-
-        //得到登陆人账号,判断当前是否有人登陆
-        String username = request.getRemoteUser();
-        List<Cart> cartList = findCartList();
-        cartList = cartService.addGoodsToCartList(cartList, itemId, num);
-        try {
-            if(StringUtils.isEmpty(username)) {
-                CookieUtil.setCookie(request, response, "cartList", JSON.toJSONString(cartList),3600*24,"UTF-8");
-                return new InfoResult(true, "添加成功");
-            } else {
-                cartService.saveCartListToRedis(username, cartList);
-                return new InfoResult(true, "添加成功");
-            }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            return new InfoResult(false, e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new InfoResult(false, "添加失败");
-        }
-    }
-
     @RequestMapping("/findOrderCartList")
     public List<Cart> findOrderCartList() {
         //得到登陆人账号,判断当前是否有人登陆
-        String username = request.getRemoteUser();
-        List<Cart> cartList = cartService.findCartListFromRedis(username);
+        List<Cart> cartList = findCartList();
         return cartService.findOrderCartList(cartList);
     }
 

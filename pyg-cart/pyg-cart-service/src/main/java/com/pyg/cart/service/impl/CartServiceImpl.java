@@ -58,6 +58,8 @@ public class CartServiceImpl implements CartService {
         if(cart == null) {
             //4.1 新建购物车对象
             cart = new Cart();
+            cart.setCartStatus(true);
+            cart.setCartNum(1L);
             cart.setSellerId(item.getSellerId());
             cart.setSellerName(item.getSeller());
             List<CartItem> orderItemList = new ArrayList<>();
@@ -76,6 +78,7 @@ public class CartServiceImpl implements CartService {
             if(orderItem == null) {
                 orderItem = createOrderItem(item, num);
                 cart.getOrderItemList().add(orderItem);
+                cart.setCartNum(cart.getCartNum()+1);
             }
 
             //5.2. 如果有，在原购物车明细上添加数量，更改金额
@@ -173,32 +176,6 @@ public class CartServiceImpl implements CartService {
         } else {
             cartList = new ArrayList<>();
         }
-        return cartList;
-    }
-
-    /**
-     * description: 从购物车中更新商品选中状态
-     *
-     * @param cartList 购物车
-     * @param status 选中状态
-     * @param itemId skuid
-     * @return java.util.List<com.pyg.vo.Cart>
-     * @author AK
-     * @date  2018年09月06日 21:01:11
-     */
-    @Override
-    public List<Cart> updateStatus(List<Cart> cartList, boolean status, Long itemId) {
-        // 根据商品SKU ID查询SKU商品信息
-        TbItem item = itemMapper.selectByPrimaryKey(itemId);
-        // 获取商家ID
-        String sellerId = item.getSellerId();
-        // 根据商家ID获取该商家的购物车
-        Cart cart = searchCartBySellerId(cartList, sellerId);
-        // 根据itemId获取该购物车明细
-        CartItem orderItem = searchOrderItemByItemId(cart.getOrderItemList(), itemId);
-        // 根据传入的状态更新此购物车明细
-        orderItem.setCartStatus(status);
-        // 返回购物车列表
         return cartList;
     }
 

@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @since 1.0.0
  */
 public class CartItem extends TbOrderItem implements Serializable {
-    private boolean cartStatus;
+    private boolean cartStatus; // 购物车明细是否选中,默认加入购物车的时候选中
 
     public boolean isCartStatus() {
         return cartStatus;

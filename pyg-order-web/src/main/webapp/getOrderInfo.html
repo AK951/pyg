@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="css/pages-getOrderInfo.css" />
 
 	<script type="text/javascript" src="js/plugins/jquery/jquery.min.js"></script>
-	<script src="js/login.js"></script>
+	<!--<script src="js/login.js"></script>-->
 
 	<script src="plugins/angularjs/angular.min.js"></script>
 	<script src="js/base.js"></script>
@@ -21,14 +21,18 @@
 	<script src="js/controller/cartController.js"></script>
 </head>
 
-<body ng-app="pyg" ng-controller="cartController" ng-init="findAddressList();findCartList()">
+<body ng-app="pyg" ng-controller="cartController" ng-init="findAddressList();findCartList();showLoginName()">
 	<!--head-->
 	<div class="top">
 		<div class="py-container">
 			<div class="shortcut">
 				<ul class="fl">
 					<li class="f-item">品优购欢迎您！</li>
-					<li class="f-item">请登录　<span><a href="#">免费注册</a></span></li>
+					<li class="f-item">
+						<span ng-if="loginName==null">请&nbsp;<a href="http://localhost:9107">登录</a></span>
+						<span ng-if="loginName==null"><a href="http://localhost:9106/register.html" target="_blank">免费注册</a></span>
+						<span ng-if="loginName!=null" class="safe">{{loginName}}&nbsp;&nbsp;<a href="/login/logout">退出</a></span>
+					</li>
 				</ul>
 				<ul class="fr">
 					<li class="f-item">我的订单</li>
@@ -83,7 +87,7 @@
 									<span class="edittext">
 										<a data-toggle="modal" ng-click="findAddressById(address.id)" data-target=".edit" data-keyboard="false">编辑</a>&nbsp;&nbsp;
 										<a href="javascript:" ng-click="deleteAddressById(address.id)">删除</a>&nbsp;&nbsp;
-										<a href="javascript:" ng-click="setDefaultAddress(address.id)">设为默认</a>
+										<a href="javascript:" ng-if="address.isDefault!='1'" ng-click="setDefaultAddress(address.id)">设为默认</a>
 									</span>
 								</div>
 								<div class="clearfix"></div>

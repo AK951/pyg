@@ -1,4 +1,4 @@
-package com.pyg.cart.controller;
+package com.pyg.order.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -15,6 +15,8 @@ import java.util.List;
 public class Cart implements Serializable {
     private String sellerId; //商家ID
     private String sellerName; //商家名称
+    private boolean cartStatus;
+    private Long cartNum;
     private List<CartItem> orderItemList; //购物车明细
 
     public String getSellerId() {
@@ -31,6 +33,22 @@ public class Cart implements Serializable {
 
     public void setSellerName(String sellerName) {
         this.sellerName = sellerName;
+    }
+
+    public boolean isCartStatus() {
+        return cartStatus;
+    }
+
+    public void setCartStatus(boolean cartStatus) {
+        this.cartStatus = cartStatus;
+    }
+
+    public Long getCartNum() {
+        return cartNum;
+    }
+
+    public void setCartNum(Long cartNum) {
+        this.cartNum = cartNum;
     }
 
     public List<CartItem> getOrderItemList() {

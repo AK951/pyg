@@ -1,4 +1,5 @@
 $(function(){
+    // 动态绑定事件
     $(".addr-item").on('mouseover mouseout', '.address', function (enent) {
         if(event.type === "mouseover"){
         	$(this).addClass("address-hover");

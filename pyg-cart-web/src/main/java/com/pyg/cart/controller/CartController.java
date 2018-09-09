@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Description:
@@ -103,17 +100,14 @@ public class CartController {
      * description: 从购物车中更新商品选中状态
      *
      * @param cartList 购物车
-     * @param status 选中状态
-     * @param itemId skuid
      * @return com.pyg.vo.InfoResult
      * @author AK
      * @date  2018年09月06日 21:06:55
      */
-    @RequestMapping("/updateStatus/{status}/{itemId}")
-    public InfoResult updateStatus(@RequestBody List<Cart> cartList, @PathVariable boolean status, @PathVariable Long itemId) {
+    @RequestMapping("/updateStatus")
+    public InfoResult updateStatus(@RequestBody List<Cart> cartList) {
         //得到登陆人账号,判断当前是否有人登陆
         String username = request.getRemoteUser();
-        cartList = cartService.updateStatus(cartList, status, itemId);
         try {
             if(StringUtils.isEmpty(username)) {
                 CookieUtil.setCookie(request, response, "cartList", JSON.toJSONString(cartList),3600*24,"UTF-8");
@@ -140,20 +134,8 @@ public class CartController {
      */
     @RequestMapping("/findOrderCartList")
     public List<Cart> findOrderCartList() {
-        //得到登陆人账号,判断当前是否有人登陆
-        String username = request.getRemoteUser();
-        List<Cart> cartList = null;
-        if(StringUtils.isEmpty(username)) {
-            String cartListString = CookieUtil.getCookieValue(request, "cartList", "utf-8");
-            if(StringUtils.isEmpty(cartListString)) {
-                cartListString = "[]";
-            }
-            cartList = JSON.parseArray(cartListString, Cart.class);
-        } else {
-            cartList = cartService.findCartListFromRedis(username);
-        }
+        List<Cart> cartList = findCartList();
         return cartService.findOrderCartList(cartList);
-
     }
 
 }

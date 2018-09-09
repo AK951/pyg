@@ -287,7 +287,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public TbPayLog searchPayLogFromRedis(String userId) {
-        return  (TbPayLog) redisTemplate.boundHashOps("payLog").get(userId);
+        return (TbPayLog) redisTemplate.boundHashOps("payLog").get(userId);
     }
 
     /**
@@ -353,8 +353,7 @@ public class OrderServiceImpl implements OrderService {
 
 
 	public TbItem findSpecForItemId(Long itemId) {
-		TbItem item = itemMapper.selectByPrimaryKey(itemId);
-		return item;
+		return itemMapper.selectByPrimaryKey(itemId);
 	}
 
     /**
